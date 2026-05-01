@@ -147,3 +147,104 @@ wails3 dev
 
 - **UDP 广播到 `255.255.255.255` 时**，若本机有多个网卡，接收端可能收到多份。建议使用定向广播地址（如 `192.168.1.255`）或绑定具体网卡 IP 而非 `0.0.0.0`。
 - npm 缓存可能出现权限问题，执行 `sudo chown -R $(whoami) ~/.npm` 可修复。
+
+---
+
+# GoNetTool - Network Debugging Tool
+
+A cross-platform desktop TCP/UDP network debugging tool written in Go, with text and hex data send/receive support.
+
+## Features
+
+### TCP Client
+- Connect to remote TCP servers
+- Send text or hex data
+- Real-time receive display (text/hex dual mode)
+- Millisecond timestamps
+
+### TCP Server
+- Listen on a local port, accept multiple client connections
+- Client list management with per-client send
+- Disconnect individual clients
+- Independent byte statistics per client
+
+### UDP
+- Bind local port, receive from any source
+- Send to specified IP/port, broadcast support
+- Remote address editable without reconnecting
+- Auto-remembers last received source for quick reply
+
+### General
+- **Hex Display**: Wireshark-style (offset + 16-byte hex + ASCII columns)
+- **Hex Send**: Input `48 65 6c 6c 6f`, auto-decoded to binary
+- **Text Display**: Printable characters shown normally, non-printable as `.`
+- **Timed Send**: Configurable interval in milliseconds
+- **Auto-scroll**: Toggleable receive area auto-scroll
+- **Byte Counters**: Real-time sent/received bytes and packets
+- **Status Indicator**: Visual connection state (green/red/yellow)
+- **Shortcut**: `Ctrl+Enter` / `Cmd+Enter` to send
+- **Startup Detection**: Auto-detects device IP on launch
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Go 1.25+ |
+| GUI Framework | [Wails v3](https://v3.wails.io) |
+| Frontend | Vanilla HTML/CSS/JavaScript (no framework) |
+| Build Tools | Vite + Taskfile |
+
+## Build
+
+### Prerequisites
+- Go 1.25+
+- Node.js 18+
+- Wails v3 CLI
+
+### Install Wails v3
+```bash
+go install github.com/wailsapp/wails/v3/cmd/wails3@latest
+```
+
+### Build
+```bash
+export PATH="$HOME/go/bin:$PATH"
+wails3 build
+```
+
+Output at `bin/GoNetTool` (~7.4MB on macOS arm64).
+
+### Dev Mode
+```bash
+wails3 dev
+```
+Hot reload for both Go and frontend changes.
+
+## Usage
+
+### TCP Client
+1. Select `TCP 客户端` protocol
+2. Fill in remote IP and port
+3. Click `连接`
+4. Type data, click `发送` or `Ctrl+Enter`
+
+### TCP Server
+1. Select `TCP 服务器` protocol
+2. Set local listening port
+3. Click `连接`
+4. Select target client from dropdown, send data
+
+### UDP
+1. Select `UDP` protocol
+2. Set local bind port, remote IP and port
+3. Click `连接`
+4. Remote IP/port can be changed anytime before sending
+5. Toggle hex mode to view hex data
+
+### Hex Send
+Input hex string (spaces optional), e.g. `48 65 6c 6c 6f`, click `Hex发送`.
+
+## Known Issues
+
+- **UDP broadcast to `255.255.255.255`**: receivers may get duplicate packets if the host has multiple network interfaces. Use a directed broadcast (e.g. `192.168.1.255`) or bind to a specific interface IP instead of `0.0.0.0`.
+- npm cache permission issues: run `sudo chown -R $(whoami) ~/.npm` to fix.
