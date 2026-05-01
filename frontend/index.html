@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/style.css"/>
+    <title>GoNetTool - 网络调试助手</title>
+</head>
+<body>
+<div id="app">
+    <!-- Connection Config -->
+    <div class="config-bar">
+        <div class="config-row">
+            <label>协议类型:</label>
+            <select id="protocol">
+                <option value="tcp-client">TCP 客户端</option>
+                <option value="tcp-server">TCP 服务器</option>
+                <option value="udp">UDP</option>
+            </select>
+        </div>
+        <div class="config-row">
+            <label>本地IP:</label>
+            <input id="local-ip" type="text" value="0.0.0.0" />
+            <label>本地端口:</label>
+            <input id="local-port" type="number" value="7788" />
+        </div>
+        <div class="config-row" id="remote-row">
+            <label>远程IP:</label>
+            <input id="remote-ip" type="text" value="127.0.0.1" />
+            <label>远程端口:</label>
+            <input id="remote-port" type="number" value="7788" />
+        </div>
+        <div class="config-row actions">
+            <button id="btn-connect" class="btn-primary">连接</button>
+            <button id="btn-disconnect" class="btn-danger" disabled>断开</button>
+            <span id="status-badge" class="status-disconnected">未连接</span>
+        </div>
+    </div>
+
+    <!-- TCP Server Client List -->
+    <div class="config-bar" id="client-bar" style="display:none;">
+        <div class="config-row">
+            <label>已连接客户端:</label>
+            <select id="client-select">
+                <option value="">-- 选择客户端 --</option>
+            </select>
+            <button id="btn-disconnect-client" class="btn-danger-sm" disabled>断开客户端</button>
+        </div>
+    </div>
+
+    <!-- Receive Display -->
+    <div class="display-area">
+        <div class="display-header">
+            <span>接收数据</span>
+            <div class="display-controls">
+                <label>显示模式:</label>
+                <select id="display-mode">
+                    <option value="text">文本</option>
+                    <option value="hex">Hex</option>
+                </select>
+                <button id="btn-clear">清空</button>
+                <label class="checkbox-label">
+                    <input type="checkbox" id="auto-scroll" checked /> 自动滚动
+                </label>
+            </div>
+        </div>
+        <textarea id="received-display" readonly></textarea>
+        <div class="display-footer">
+            <span>发送: <b id="sent-counter">0</b> 字节</span>
+            <span>接收: <b id="received-counter">0</b> 字节</span>
+        </div>
+    </div>
+
+    <!-- Send Area -->
+    <div class="send-area">
+        <div class="send-input-row">
+            <textarea id="send-input" placeholder="输入要发送的数据..."></textarea>
+        </div>
+        <div class="send-actions">
+            <button id="btn-send" class="btn-primary" disabled>发送</button>
+            <button id="btn-send-hex" class="btn-secondary" disabled>Hex 发送</button>
+            <label class="checkbox-label">
+                <input type="checkbox" id="auto-send" /> 定时发送
+            </label>
+            <label>间隔:</label>
+            <input id="auto-send-interval" type="number" value="1000" min="100" max="60000" style="width:80px;" />
+            <span>ms</span>
+        </div>
+    </div>
+</div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
