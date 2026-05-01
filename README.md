@@ -1,6 +1,11 @@
-# GoNetTool - 网络调试助手
+# GoNetTool - 网络调试助手 / Network Debugging Tool
 
 Go 语言编写的跨平台桌面端 TCP/UDP 网络调试工具，支持文本和十六进制数据收发。
+
+A cross-platform desktop TCP/UDP network debugging tool written in Go, with text and hex data send/receive support.
+
+<details open>
+<summary><b>🇨🇳 中文</b></summary>
 
 ## 功能
 
@@ -148,11 +153,10 @@ wails3 dev
 - **UDP 广播到 `255.255.255.255` 时**，若本机有多个网卡，接收端可能收到多份。建议使用定向广播地址（如 `192.168.1.255`）或绑定具体网卡 IP 而非 `0.0.0.0`。
 - npm 缓存可能出现权限问题，执行 `sudo chown -R $(whoami) ~/.npm` 可修复。
 
----
+</details>
 
-# GoNetTool - Network Debugging Tool
-
-A cross-platform desktop TCP/UDP network debugging tool written in Go, with text and hex data send/receive support.
+<details>
+<summary><b>🇺🇸 English</b></summary>
 
 ## Features
 
@@ -185,6 +189,29 @@ A cross-platform desktop TCP/UDP network debugging tool written in Go, with text
 - **Shortcut**: `Ctrl+Enter` / `Cmd+Enter` to send
 - **Startup Detection**: Auto-detects device IP on launch
 
+## UI Layout
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Protocol: [TCP Client ▼]                                │
+│  Local IP: [192.168.1.100]  Local Port: [7788]          │
+│  Remote IP: [127.0.0.1]     Remote Port: [7788]         │
+│  [Connect] [Disconnect]    Status: ● Connected           │
+├─────────────────────────────────────────────────────────┤
+│  (TCP Server: client dropdown hidden otherwise)          │
+├─────────────────────────────────────────────────────────┤
+│  Received Data              [Text ▼] [Clear] [Auto ✓]    │
+│  ┌─────────────────────────────────────────────────────┐│
+│  │ [16:54:32.001] [RX] Hello World  src:192.168...    ││
+│  │ [16:54:33.456] [TX] Hello World  dst:192.168...    ││
+│  └─────────────────────────────────────────────────────┘│
+│  Sent: 12 B | Received: 24 B                             │
+├─────────────────────────────────────────────────────────┤
+│  Send: [________________________] [Send] [Hex Send]     │
+│  [□ Auto Send] Interval: [1000]ms                        │
+└─────────────────────────────────────────────────────────┘
+```
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -193,6 +220,34 @@ A cross-platform desktop TCP/UDP network debugging tool written in Go, with text
 | GUI Framework | [Wails v3](https://v3.wails.io) |
 | Frontend | Vanilla HTML/CSS/JavaScript (no framework) |
 | Build Tools | Vite + Taskfile |
+
+## Project Structure
+
+```
+go-net-tool/
+├── main.go                           # App entry point, Wails service registration
+├── go.mod / go.sum
+├── Taskfile.yml                      # Build task definitions
+├── build/                            # Platform build configs (macOS/Windows/Linux)
+├── frontend/
+│   ├── index.html                    # Main UI layout
+│   ├── src/main.js                   # Frontend logic (DOM ↔ Go service bridge)
+│   ├── public/style.css              # Dark theme styles
+│   ├── dist/                         # Vite build output (embedded in binary)
+│   └── bindings/                     # Auto-generated Go↔JS bindings
+└── internal/
+    ├── model/
+    │   ├── message.go                # Message, direction base types
+    │   └── connection.go             # Protocol, connection state, config types
+    ├── converter/
+    │   └── hex.go                    # Wireshark-style hex dump formatting
+    ├── network/
+    │   ├── tcp_client.go             # TCP client: dial, send/recv, read loop
+    │   ├── tcp_server.go             # TCP server: listen, multi-client management
+    │   └── udp.go                    # UDP: bind, send/recv, source tracking
+    └── service/
+        └── netservice.go             # Wails service: 15 frontend-callable methods
+```
 
 ## Build
 
@@ -212,7 +267,7 @@ export PATH="$HOME/go/bin:$PATH"
 wails3 build
 ```
 
-Output at `bin/GoNetTool` (~7.4MB on macOS arm64).
+Output at `bin/GoNetTool` (~7.4 MB on macOS arm64).
 
 ### Dev Mode
 ```bash
@@ -224,7 +279,7 @@ Hot reload for both Go and frontend changes.
 
 ### TCP Client
 1. Select `TCP 客户端` protocol
-2. Fill in remote IP and port
+2. Set remote IP and port
 3. Click `连接`
 4. Type data, click `发送` or `Ctrl+Enter`
 
@@ -248,3 +303,5 @@ Input hex string (spaces optional), e.g. `48 65 6c 6c 6f`, click `Hex发送`.
 
 - **UDP broadcast to `255.255.255.255`**: receivers may get duplicate packets if the host has multiple network interfaces. Use a directed broadcast (e.g. `192.168.1.255`) or bind to a specific interface IP instead of `0.0.0.0`.
 - npm cache permission issues: run `sudo chown -R $(whoami) ~/.npm` to fix.
+
+</details>
